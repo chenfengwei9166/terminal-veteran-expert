@@ -4,7 +4,7 @@
 bci_format.py — 数据格式化与增强引擎
 
 功能：
-  1. 将去BCI化后的报告原文解析提取成标准化Markdown文件
+  1. 将脱敏后的报告原文解析提取成标准化Markdown文件
   2. 每月生成7个文件 + 更新3个聚合文件
   3. 7个增强维度：5G品牌/价位段环比/TOP10均价/分省5G/品牌动态/核心信号/累计数据
 
@@ -46,7 +46,7 @@ def _format_market_overview(content, year_month):
 
     md = f"""# {year}年{int(month)}月手机市场概况
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 ## 一、{int(month)}月市场概况
 
@@ -80,7 +80,7 @@ def _format_brand_competition(content, year_month):
 
     md = f"""# {year}年{int(month)}月品牌竞争格局
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 ## TOP6品牌份额
 
@@ -117,7 +117,7 @@ def _format_price_segments(content, year_month):
 
     md = f"""# {year}年{int(month)}月价位段结构
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 | 价位段 | 份额 | 环比 |
 |--------|------|------|
@@ -145,7 +145,7 @@ def _format_channels(content, year_month):
 
     md = f"""# {year}年{int(month)}月渠道结构
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 | 渠道 | 销量(万) | 占比 | 5G渗透率 | TOP品牌 |
 |------|---------|------|---------|---------|
@@ -166,7 +166,7 @@ def _format_top10_models(content, year_month):
 
     md = f"""# {year}年{int(month)}月TOP10机型
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 | 排名 | 机型 | 销量(万) | 环比 | 均价 |
 |------|------|---------|------|------|
@@ -198,7 +198,7 @@ def _format_provincial(content, year_month):
 
     md = f"""# {year}年{int(month)}月分省分析
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 ## 全国总体概况
 
@@ -226,7 +226,7 @@ def _format_month_comparison(content, year_month):
 
     md = f"""# {year}年{int(month)}月与上月对比
 
-> 数据来源：华盛公司经营知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 去BCI化
+> 数据来源：行业知识库 | 提取：{datetime.now().strftime('%Y-%m-%d')} | 脱敏处理
 
 | 指标 | 上月 | 本月 | 变化 |
 |------|-----|-----|------|
@@ -263,7 +263,7 @@ def format_monthly_data(deidentify_result, year_month):
         {"status": "ok", "files": {文件名: 内容}, "details": "..."}
     """
     if deidentify_result.get("status") != "ok":
-        return {"status": "error", "details": "去BCI化结果状态异常"}
+        return {"status": "error", "details": "脱敏结果状态异常"}
 
     content = deidentify_result.get("content", {})
 
