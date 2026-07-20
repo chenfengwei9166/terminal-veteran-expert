@@ -1,7 +1,7 @@
 {
   "name": "terminal-veteran",
-  "version": "3.0.0",
-  "description": "Terminal Veteran v3.0.0 - 30-year terminal industry veteran + GIIC Vice Chair. 4 original theories + 11 industry laws + 3-layer methodology (17 strategic layers) + 28 curated quotes + 8 examples + vendor/channel/investment analysis + MWC26+WAIC26 speech + auto data sync from GitHub + 808zdlb collaboration + material review (PPT content+format) + speech draft generation + content creation. Architecture upgrade with data separation.",
+  "version": "3.0.1",
+  "description": "Terminal Veteran v3.0.1 - 30-year terminal industry veteran + GIIC Vice Chair. 4 original theories + 11 industry laws + 3-layer methodology (17 strategic layers) + 28 curated quotes + 8 examples + vendor/channel/investment analysis + MWC26+WAIC26 speech + auto data sync from GitHub + 808zdlb collaboration + menu-based interaction + material review (PPT content+format) + speech draft generation + content creation. Architecture upgrade with data separation.",
   "author": {
     "name": "陈丰伟",
     "email": ""
