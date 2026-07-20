@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-bci_pipeline.py — 终端老兵专家 BCI数据自动化管线 主调度脚本
+bci_pipeline.py — 终端老兵专家 数据自动化管线 主调度脚本
 
 流程：
   1. bci_fetch.py     — 从IMA知识库读取月度报告
-  2. bci_deidentify.py — 去BCI化处理
+  2. bci_deidentify.py — 脱敏处理
   3. bci_format.py    — 数据格式化+增强
   4. bci_upload.py    — GitHub上传+manifest更新
 
@@ -49,7 +49,7 @@ def main():
     year_month = sys.argv[1]
     dry_run = "--dry" in sys.argv
 
-    print(f"终端老兵专家 BCI数据管线")
+    print(f"终端老兵专家 数据管线")
     print(f"目标月份: {year_month}")
     print(f"模式: {'dry run（不上传）' if dry_run else '完整执行'}")
 
@@ -61,19 +61,19 @@ def main():
         print("\n管线中止：IMA读取失败")
         sys.exit(1)
 
-    # Step 2: 去BCI化
+    # Step 2: 脱敏处理
     from bci_deidentify import deidentify_content, validate_content
-    step2 = run_step("去BCI化处理", deidentify_content, step1)
+    step2 = run_step("脱敏处理", deidentify_content, step1)
     if not step2:
-        print("\n管线中止：去BCI化失败")
+        print("\n管线中止：脱敏失败")
         sys.exit(1)
 
     # 校验
     validation = validate_content(step2.get("content", {}))
     if not validation["valid"]:
-        print(f"\n❌ 去BCI校验失败: {validation['issues']}")
+        print(f"\n❌ 脱敏校验失败: {validation['issues']}")
         sys.exit(1)
-    print(f"\n✅ 去BCI验证通过")
+    print(f"\n✅ 脱敏验证通过")
 
     # Step 3: 格式化+增强
     from bci_format import format_monthly_data
