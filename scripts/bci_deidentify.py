@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-bci_deidentify.py — 去BCI化处理引擎
+bci_deidentify.py — 数据脱敏处理引擎
 
 功能：
-  1. 对IMA报告原文执行BCI脱敏
-  2. 确保输出文本无任何BCI痕迹
+  1. 对IMA报告原文执行来源脱敏
+  2. 确保输出文本无内部数据源痕迹
   3. 提供validate校验函数
 
 替换规则：
   BCI数据 → 行业数据显示
   BCI报告 → 月度市场监测报告
   BCI月度 → 月度市场监测
-  BCI（其他上下文） → 华盛公司经营知识库
+  BCI（其他上下文） → 行业知识库
   bci（路径/文件名） → industry
 """
 
@@ -23,8 +23,8 @@ REPLACEMENTS = [
     (r"BCI\s*数据", "行业数据显示"),
     (r"BCI\s*报告", "月度市场监测报告"),
     (r"BCI\s*月度", "月度市场监测"),
-    (r"BCI\s*知识库", "华盛公司经营知识库"),
-    (r"BCI", "华盛公司经营知识库"),
+    (r"BCI\s*知识库", "行业知识库"),
+    (r"BCI", "行业知识库"),
     (r"bci-data", "industry-data"),
     (r"bci_fetch", "industry_fetch"),
     (r"bci_pipeline", "industry_pipeline"),
@@ -33,7 +33,7 @@ REPLACEMENTS = [
 
 
 def deidentify_text(text):
-    """对文本执行去BCI化处理。"""
+    """对文本执行脱敏处理。"""
     if not text:
         return text
     for pattern, replacement in REPLACEMENTS:
@@ -43,7 +43,7 @@ def deidentify_text(text):
 
 def deidentify_content(fetch_result):
     """
-    对fetch结果执行去BCI化处理。
+    对fetch结果执行脱敏处理。
 
     参数:
         fetch_result: bci_fetch.fetch_monthly_reports() 的返回值
@@ -82,13 +82,13 @@ def deidentify_content(fetch_result):
         "status": "ok",
         "month": fetch_result.get("month", ""),
         "content": content,
-        "details": "去BCI化处理完成",
+        "details": "脱敏处理完成",
     }
 
 
 def validate_content(content):
     """
-    验证内容中无BCI残留。
+    验证内容中无内部数据源残留。
 
     返回:
         {"valid": True/False, "issues": [...]}
@@ -103,7 +103,7 @@ def validate_content(content):
 
     full_text = " ".join(text_parts)
 
-    # 检查BCI残留
+    # 检查内部数据源残留
     if "BCI" in full_text:
         # 找出位置
         matches = [(m.start(), full_text[max(0,m.start()-20):m.end()+20]) for m in re.finditer("BCI", full_text)]
