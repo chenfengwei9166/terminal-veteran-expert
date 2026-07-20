@@ -24,14 +24,14 @@ CLIENT_ID_FILE = os.path.expanduser("~/.config/ima/client_id")
 API_KEY_FILE = os.path.expanduser("~/.config/ima/api_key")
 KB_ID = "iMcQGV1yFJ95ZY_2Civak4-0-J9NNFCWSCYYYd0806E="
 FOLDER_ID = "7467227984964220"
-OUT_FILE = "/tmp/ima_bci_resp.json"
+OUT_FILE = os.path.join(tempfile.gettempdir(), "ima_bci_resp.json")
 
 
 def _load_credentials():
     """加载IMA凭证。"""
     try:
-        client_id = open(CLIENT_ID_FILE).read().strip()
-        api_key = open(API_KEY_FILE).read().strip()
+        client_id = open(CLIENT_ID_FILE, "r", encoding="utf-8").read().strip()
+        api_key = open(API_KEY_FILE, "r", encoding="utf-8").read().strip()
         return client_id, api_key
     except Exception as e:
         return None, None
