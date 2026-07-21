@@ -14,7 +14,7 @@ Agent 型（单个 AI 专家）
 
 **三大变革**：
 1. **数据分离**：行业数据外迁至GitHub数据仓库（`chenfengwei9166/terminal-veteran-data`），月度更新不需要升专家版本号
-2. **自动同步**：`scripts/data_sync.py` 7天自动检查+增量同步，数据管线（`bci_pipeline.py`）自动读取IMA→脱敏→格式化→上传GitHub
+2. **自动同步**：`scripts/data_sync.py` 7天自动检查+增量同步，数据管线（`data_pipeline.py`）自动读取IMA→脱敏→格式化→上传GitHub
 3. **808zdlb协同**：竞品/选品/日历场景路由到808zdlb skill，两个系统共享同一数据仓库
 
 **Agent MD精简**：11192→7570字符（-32%），铁律去数据/金句编号化/当下情报外迁/示范精简30%
@@ -101,11 +101,11 @@ theory/                       # 理论与金句（季度更新）
 | 脚本 | 功能 |
 |------|------|
 | `scripts/data_sync.py` | 数据增量同步（7天间隔，GitHub→本地） |
-| `scripts/bci_pipeline.py` | 数据管线主调度（IMA→脱敏→格式化→GitHub） |
-| `scripts/bci_fetch.py` | 从IMA知识库读取月度报告 |
-| `scripts/bci_deidentify.py` | 脱敏处理引擎 |
-| `scripts/bci_format.py` | 数据格式化与增强引擎 |
-| `scripts/bci_upload.py` | GitHub上传+manifest更新 |
+| `scripts/data_pipeline.py` | 数据管线主调度（IMA→脱敏→格式化→GitHub） |
+| `scripts/data_fetch.py` | 从IMA知识库读取月度报告 |
+| `scripts/data_deidentify.py` | 脱敏处理引擎 |
+| `scripts/data_format.py` | 数据格式化与增强引擎 |
+| `scripts/data_upload.py` | GitHub上传+manifest更新 |
 
 ## 安装
 
