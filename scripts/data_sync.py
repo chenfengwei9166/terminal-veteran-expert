@@ -12,9 +12,14 @@ data_sync.py — 终端老兵专家 数据增量同步器
 
 合规说明：
   - 只向 GitHub raw 域名发送 GET 请求，不传输任何用户数据
-  - 网络异常时静默跳过，不影响主流程
-  - 使用 except Exception（非裸 except）
+  - 网络异常时降级使用内置兜底数据，不影响主流程
+  - 使用 except Exception（非裸 except），异常信息可追踪
   - 代码中无敏感词
+
+数据加载策略（双层架构）：
+  1. 外置热更新：~/.workbuddy/skills-data/terminal-veteran/（网络可达时）
+  2. 内置兜底：references/data/ 和 references/theory/（网络不可达时自动降级）
+  3. Agent MD核心知识：始终可用，不受网络影响
 """
 
 import hashlib
@@ -33,6 +38,9 @@ MANIFEST_URL = (
 REPO = "chenfengwei9166/terminal-veteran-data"
 BASE_DIR = os.path.expanduser("~/.workbuddy/skills-data/terminal-veteran")
 CACHE_FILE = os.path.expanduser("~/.workbuddy/skills-data/terminal-veteran/.sync_cache.json")
+# 内置兜底数据路径（专家包内）
+BUILTIN_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "references", "data")
+BUILTIN_THEORY_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "references", "theory")
 CHECK_INTERVAL_DAYS = 7
 TIMEOUT = 60  # 秒
 
@@ -108,8 +116,8 @@ def _fetch_json(url):
         req = urllib.request.Request(url, method="GET")
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
             return json.loads(resp.read().decode("utf-8"))
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[data_sync] 警告: urllib请求失败: {type(e).__name__}: {e}")
 
     if _gh_available() and "manifest.json" in url:
         try:
@@ -121,9 +129,10 @@ def _fetch_json(url):
                 import base64
                 content = base64.b64decode(result.stdout.strip()).decode("utf-8")
                 return json.loads(content)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[data_sync] 警告: gh CLI备选请求失败: {type(e).__name__}: {e}")
 
+    print("[data_sync] 网络受限，将使用内置兜底数据")
     return {}
 
 
@@ -133,8 +142,8 @@ def _fetch_text(url):
         req = urllib.request.Request(url, method="GET")
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
             return resp.read().decode("utf-8")
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[data_sync] 警告: 文件下载失败: {type(e).__name__}: {e}")
 
     if _gh_available():
         fname = url.split("/")[-1]
@@ -146,8 +155,8 @@ def _fetch_text(url):
             if result.returncode == 0:
                 import base64
                 return base64.b64decode(result.stdout.strip()).decode("utf-8")
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[data_sync] 警告: gh CLI备选下载失败: {type(e).__name__}: {e}")
 
     return ""
 
@@ -186,8 +195,8 @@ def sync(check_only=False, force=False):
     # 2. 拉取远程 manifest
     manifest = _fetch_json(MANIFEST_URL)
     if not manifest or "files" not in manifest:
-        result["status"] = "error"
-        result["details"] = "无法获取远程 manifest（网络异常或仓库不可达）"
+        result["status"] = "fallback"
+        result["details"] = "网络受限，使用内置兜底数据（版本可能非最新）"
         return result
 
     remote_version = manifest.get("version", "unknown")
